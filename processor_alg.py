@@ -1,16 +1,19 @@
 import input_processor
-from input_processor import data
+from input_processor import processes_data
 class Process:
     base_id = 0
 
-    def __init__(self, process_execution_time):
+    def __init__(self, process_start_time, process_execution_time):
         Process.base_id += 1
         self.id = self.base_id
         self.execution_time = process_execution_time
+        self.start_time = process_start_time
         self.waiting_time = 0
 
     def __repr__(self):
-        info = f"Process id: {self.id} | execution time: {self.execution_time} | waiting time: {self.waiting_time}"
+        RED = '\033[91m'
+        RESET = '\033[0m'
+        info = f"Process id: {RED} {self.id} {RESET}| start time: {self.start_time} | execution time: {self.execution_time} | waiting time: {self.waiting_time}"
         return info
 
     def __str__(self):
@@ -20,7 +23,7 @@ class Process:
         self.waiting_time += val
         return self.waiting_time
 
-class Processor_alg:
+class ProcessorAlg:
     def __init__(self, processes):
         self.processes: list[Process] = processes
         self.execution_time = 0
@@ -39,39 +42,87 @@ class Processor_alg:
             i.add_waiting_time(val)
         self.execution_time += val
 
-    def fcfs(self):
-        num_of_processes = len(self.processes)
-        while self.processes:
-            process = self.processes.pop(0)
-            self.processes_waiting_times.append(process.waiting_time)
-            self.delay_processes(process.execution_time)
-            print("Finished process ->", process)
-            self.add_process_setting_time()
 
+    def sort_by_start_time(self):
+        self.processes.sort(key=lambda process: process.start_time)
+
+    # def fcfs(self):
+    #     num_of_processes = len(self.processes)
+    #     print(self.processes)
+    #     while self.processes:
+    #         print(self.processes)
+    #         process = self.processes.pop(0)
+    #         self.processes_waiting_times.append(process.waiting_time)
+    #         self.delay_processes(process.execution_time)
+    #         print("Finished process ->", process)
+    #         self.add_process_setting_time()
+    #
+    #     self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
+    #     print("Finished fcfs!")
+    #     info_dict = dict(
+    #                 execution_time=self.execution_time,
+    #                 average_waiting_time=self.average_process_waiting_time,
+    #                 max_waiting_time=max(self.processes_waiting_times))
+    #     return info_dict
+    def fcfs(self):
+        self.sort_by_start_time()
+        num_of_processes = len(self.processes)
+        current_time = 0
+        for process in self.processes:
+            if current_time < process.start_time:
+                current_time = process.start_time
+            process.waiting_time = current_time - process.start_time
+            current_time += process.execution_time
+            self.processes_waiting_times.append(process.waiting_time)
+            print("Finished process ->", process)
         self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
         print("Finished fcfs!")
         info_dict = dict(
-                    execution_time=self.execution_time,
-                    average_waiting_time=self.average_process_waiting_time,
-                    max_waiting_time=max(self.processes_waiting_times))
+            execution_time=current_time,
+            average_waiting_time=self.average_process_waiting_time,
+            max_waiting_time=max(self.processes_waiting_times))
         return info_dict
 
     def sjf(self):
+        # num_of_processes = len(self.processes)
+
+
+#         # while self.processes:
+#         #     self.processes.sort(key=lambda x: x.execution_time)
+#         #     process = self.processes.pop(0)
+#         #     self.processes_waiting_times.append(process.waiting_time)
+#         #     print("Finished process ->", process)
+#         #     self.delay_processes(process.execution_time)
+#         #     self.add_process_setting_time()
+#         #
+#         # self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
+#         # print("Finished sjf!")
+#         # info_dict = dict(
+#         #             execution_time=self.execution_time,
+#         #             average_waiting_time=self.average_process_waiting_time,
+#         #             max_waiting_time=max(self.processes_waiting_times))
+#         # return info_dict
         num_of_processes = len(self.processes)
+        current_time = 0
+
         while self.processes:
-            self.processes.sort(key=lambda x: x.execution_time)
-            process = self.processes.pop(0)
+            available_processes = [p for p in self.processes if p.start_time <= current_time]
+            if not available_processes:
+                current_time += 1
+                continue
+            available_processes.sort(key=lambda x: x.execution_time)
+            process = available_processes[0]
+            self.processes.remove(process)
+            process.waiting_time = current_time - process.start_time
+            current_time += process.execution_time
             self.processes_waiting_times.append(process.waiting_time)
             print("Finished process ->", process)
-            self.delay_processes(process.execution_time)
-            self.add_process_setting_time()
-
         self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
         print("Finished sjf!")
         info_dict = dict(
-                    execution_time=self.execution_time,
-                    average_waiting_time=self.average_process_waiting_time,
-                    max_waiting_time=max(self.processes_waiting_times))
+            execution_time=current_time,
+            average_waiting_time=self.average_process_waiting_time,
+            max_waiting_time=max(self.processes_waiting_times))
         return info_dict
 
 # test = [2, 45 , 325 , 135]
@@ -84,16 +135,26 @@ class Processor_alg:
 # print(w)
 
 
-print(input_processor.data)
-for i in range(1, len(data)):
-    print(f"Test number {i}:")
-    processes_list = []
-    test = data[i-1]
-    for exec_time in test:
-        processes_list.append(Process(exec_time))
-    alg = Processor_alg(processes_list)
-    w = alg.sjf()
-    print(w)
+print(input_processor.processes_data)
+# for i in range(1, len(processes_data)):
+#     print(f"Test number {i}:")
+#     processes_list = []
+#     test = processes_data[i-1]
+#     print(test)
+#     for process in test:
+#         process_start = process[0]
+#         process_exec = process[1]
+#         processes_list.append(Process(process_start, process_exec))
+#     alg = ProcessorAlg(processes_list)
+#     w = alg.fcfs()
+#     print(w)
 
+processes_list = []
+for process in processes_data:
+    start = process[0]
+    exec = process[1]
+    processes_list.append(Process(start, exec))
 
-
+alg = ProcessorAlg(processes_list)
+w = alg.sjf()
+print(w)
