@@ -1,5 +1,5 @@
 import input_processor
-from input_processor import processes_data
+from chart_painter import ChartPainter
 class Process:
     base_id = 0
 
@@ -13,7 +13,13 @@ class Process:
     def __repr__(self):
         RED = '\033[91m'
         RESET = '\033[0m'
-        info = f"Process id: {RED} {self.id} {RESET}| start time: {self.start_time} | execution time: {self.execution_time} | waiting time: {self.waiting_time}"
+        BLUE = '\033[34m'
+        GREEN = '\033[32m'
+        YELLOW = '\033[33m'
+        info = (f"Process id: {RED} {self.id} {RESET}"
+                f"| start time: {BLUE } {self.start_time} {RESET} "
+                f"| execution time: {GREEN} {self.execution_time} {RESET}"
+                f"| waiting time: {YELLOW} {self.waiting_time} {RESET}")
         return info
 
     def __str__(self):
@@ -46,65 +52,38 @@ class ProcessorAlg:
     def sort_by_start_time(self):
         self.processes.sort(key=lambda process: process.start_time)
 
-    # def fcfs(self):
-    #     num_of_processes = len(self.processes)
-    #     print(self.processes)
-    #     while self.processes:
-    #         print(self.processes)
-    #         process = self.processes.pop(0)
-    #         self.processes_waiting_times.append(process.waiting_time)
-    #         self.delay_processes(process.execution_time)
-    #         print("Finished process ->", process)
-    #         self.add_process_setting_time()
-    #
-    #     self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
-    #     print("Finished fcfs!")
-    #     info_dict = dict(
-    #                 execution_time=self.execution_time,
-    #                 average_waiting_time=self.average_process_waiting_time,
-    #                 max_waiting_time=max(self.processes_waiting_times))
-    #     return info_dict
+
     def fcfs(self):
         self.sort_by_start_time()
         num_of_processes = len(self.processes)
         current_time = 0
+        chart_logs = []
         for process in self.processes:
             if current_time < process.start_time:
                 current_time = process.start_time
             process.waiting_time = current_time - process.start_time
             current_time += process.execution_time
             self.processes_waiting_times.append(process.waiting_time)
+            process_logs = dict(
+                process_id=process.id,
+                start_time=process.start_time,
+                execution_time=process.execution_time,
+                waiting_time=process.waiting_time)
+            chart_logs.append(process_logs)
             print("Finished process ->", process)
         self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
         print("Finished fcfs!")
         info_dict = dict(
             execution_time=current_time,
             average_waiting_time=self.average_process_waiting_time,
-            max_waiting_time=max(self.processes_waiting_times))
+            max_waiting_time=max(self.processes_waiting_times),
+            chart_data=chart_logs)
         return info_dict
 
     def sjf(self):
-        # num_of_processes = len(self.processes)
-
-
-#         # while self.processes:
-#         #     self.processes.sort(key=lambda x: x.execution_time)
-#         #     process = self.processes.pop(0)
-#         #     self.processes_waiting_times.append(process.waiting_time)
-#         #     print("Finished process ->", process)
-#         #     self.delay_processes(process.execution_time)
-#         #     self.add_process_setting_time()
-#         #
-#         # self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
-#         # print("Finished sjf!")
-#         # info_dict = dict(
-#         #             execution_time=self.execution_time,
-#         #             average_waiting_time=self.average_process_waiting_time,
-#         #             max_waiting_time=max(self.processes_waiting_times))
-#         # return info_dict
         num_of_processes = len(self.processes)
         current_time = 0
-
+        chart_logs = []
         while self.processes:
             available_processes = [p for p in self.processes if p.start_time <= current_time]
             if not available_processes:
@@ -116,45 +95,19 @@ class ProcessorAlg:
             process.waiting_time = current_time - process.start_time
             current_time += process.execution_time
             self.processes_waiting_times.append(process.waiting_time)
+            process_logs = dict(
+                process_id=process.id,
+                start_time=process.start_time,
+                execution_time=process.execution_time,
+                waiting_time=process.waiting_time)
+            chart_logs.append(process_logs)
             print("Finished process ->", process)
         self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
+
         print("Finished sjf!")
         info_dict = dict(
             execution_time=current_time,
             average_waiting_time=self.average_process_waiting_time,
-            max_waiting_time=max(self.processes_waiting_times))
+            max_waiting_time=max(self.processes_waiting_times),
+            chart_data=chart_logs)
         return info_dict
-
-# test = [2, 45 , 325 , 135]
-# processes_list = []
-# for exec_time in test:
-#     processes_list.append(Process(exec_time))
-#
-# alg = Processor_alg(processes_list)
-# w = alg.fcfs()
-# print(w)
-
-
-print(input_processor.processes_data)
-# for i in range(1, len(processes_data)):
-#     print(f"Test number {i}:")
-#     processes_list = []
-#     test = processes_data[i-1]
-#     print(test)
-#     for process in test:
-#         process_start = process[0]
-#         process_exec = process[1]
-#         processes_list.append(Process(process_start, process_exec))
-#     alg = ProcessorAlg(processes_list)
-#     w = alg.fcfs()
-#     print(w)
-
-processes_list = []
-for process in processes_data:
-    start = process[0]
-    exec = process[1]
-    processes_list.append(Process(start, exec))
-
-alg = ProcessorAlg(processes_list)
-w = alg.sjf()
-print(w)

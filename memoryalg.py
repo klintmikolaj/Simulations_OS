@@ -1,7 +1,3 @@
-import colorama
-import time
-import input_memory
-from input_memory import memory_data
 class Page:
 
 
@@ -57,37 +53,37 @@ class MemoryAlg:
                 return True
         return False
 
-    def replace_page(self): #find and replace page with highest time_not_used
+
+    def replace_page(self, new_page):  # find and replace page with highest time_not_used
         index_to_replace = 0
-        time_not_used = -1
+        highest_time_not_used = -1
         for i, page in enumerate(self.slots):
-            if page is not None and (time_not_used < page.time_not_used):
+            if page is not None and (highest_time_not_used < page.time_not_used):
                 index_to_replace = i
-                time_not_used = page.time_not_used
-        if index_to_replace is not None:
-            self.slots[index_to_replace] = None
+                highest_time_not_used = page.time_not_used
+        # Replace the least recently used page with the new page
+        self.slots[index_to_replace] = new_page
+
 
     def fifo(self):
-        # start_clock = time.time()
+        longest_not_used_index = 0  # Initialize a pointer to track the oldest page index
         for page in self.reference_values:
             does_page_exist = self.if_value_exists(page)
             if not does_page_exist:
-                if None in self.slots:
-                    empty_slot_index = self.slots.index(None)
-                    self.slots[empty_slot_index] = page
-                else:
-                    self.slots.pop(0)
-                    self.slots.append(page)
+                # Replace the oldest page with the new page
+                self.slots[longest_not_used_index] = page
+
+                # Move the oldest page pointer to the next index, wrapping around if necessary
+                longest_not_used_index = (longest_not_used_index + 1) % len(self.slots)
+
                 self.page_faults += 1
             self.add_time_in_memory()
 
             print(self.slots)
-            print(self.page_faults)
-        # self.execution_time = time.time() - start_clock
-        info = dict(
-                    execution_time=self.execution_time,
-                    page_faults=self.page_faults)
-        return info
+            # print(f'Page faults counter: {self.page_faults}')
+        # info = dict(page_faults=self.page_faults)
+        print("Total page faults: ")
+        return self.page_faults
 
     def lru(self):
         for page in self.reference_values:
@@ -95,50 +91,16 @@ class MemoryAlg:
             if not self.if_value_exists(page):
                 self.page_faults += 1
                 if None in self.slots:
+                    # Find the first empty slot and add the page there
                     empty_slot_index = self.slots.index(None)
                     self.slots[empty_slot_index] = page
                 else:
-                    self.replace_page()
-                    for i in range(len(self.slots)):
-                        if self.slots[i] is None:
-                            self.slots[i] = page
-                            break
-            print(self.slots)
+                    # No empty slots, replace the least recently used page
+                    self.replace_page(page)
+            # Update the time not used for all pages
             self.change_time_not_used(page)
-
+            print(self.slots)
+        print("Total page faults: ")
         return self.page_faults
-
-
-
-
-
-
-# size = 4
-# values1 = [1, 3, 0, 3, 5, 6, 3]
-# values2 = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 3]
-# test = MemoryAlg()
-# test.set_reference_values(values2)
-# test.set_slots(size)
-# print(test.slots)
-# print(test.reference_values)
-# print(test.fifo())
-
-
-print(memory_data)
-for i in range(1, len(memory_data) + 1):
-    print(f"Test number {i}:")
-    pages_list = []
-    test = memory_data[i-1]
-    for base_id in test:
-        pages_list.append(base_id)
-    print(f'Pages list: {pages_list}')
-    alg = MemoryAlg()
-    alg.set_reference_values(pages_list)
-    alg.set_slots(input_memory.num_of_slots)
-    print(alg.fifo())
-
-
-
-
 
 
