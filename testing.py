@@ -6,22 +6,22 @@ from input_memory import load_memory_data
 from input_processor import load_specific_data
 
 
-
 class Test:
     def __init__(self):
         self.test_count = 0
+        self.RED = '\033[31m'
+        self.RESET ='\033[0m'
+        self.BLUE = '\033[34m'
+        self.MAGENTA = '\033[35m'
 
     def help_panel(self):
-        BLUE = '\033[34m'
-        MAGENTA = '\033[35m'
-        RESET = '\033[0m'
-        print(f"{BLUE} WELCOME TO THE HELP PANEL {RESET}")
-        print(BLUE + "> q" + RESET + " - quits the program")
-        print(BLUE + "> fcfs" + RESET + "- perform the simulation of the FCFS algorithm")
-        print(BLUE + "> sjf" + RESET + "- perform the simulation of the SJF algorithm ")
-        print(BLUE + "> fifo" + RESET + "- perform the simulation of the FIFO algorithm ")
-        print(BLUE + "> lru" + RESET + "- perform the simulation of the LRU algorithm ")
-
+        print(f"{self.BLUE} WELCOME TO THE HELP PANEL {self.RESET}")
+        print(self.BLUE + "> q" + self.RESET + " - quits the program")
+        print(self.BLUE + "> t" + self.RESET + " - displays a number of conducted tests")
+        print(self.BLUE + "> fcfs" + self.RESET + "- perform the simulation of the FCFS algorithm")
+        print(self.BLUE + "> sjf" + self.RESET + "- perform the simulation of the SJF algorithm ")
+        print(self.BLUE + "> fifo" + self.RESET + "- perform the simulation of the FIFO algorithm ")
+        print(self.BLUE + "> lru" + self.RESET + "- perform the simulation of the LRU algorithm ")
 
     def test_processor(self, data, alg_type):
         print("-----------------------------------------")
@@ -30,6 +30,7 @@ class Test:
         elif alg_type == "sjf":
             print("Testing SJF algorithm")
         print(f"Test data: {data}")
+
         processes_list = []
         for process in data:
             process_start = process[0]
@@ -38,14 +39,14 @@ class Test:
         algorithm = ProcessorAlg(processes_list)
         if alg_type == "fcfs":
             alg_output = algorithm.fcfs()
+            chart = ChartPainter(alg_output['chart_data'], "FCFS")
         elif alg_type == "sjf":
             alg_output = algorithm.sjf()
-        print(alg_output)
+            chart = ChartPainter(alg_output['chart_data'], "SJF")
+        print(f"Logs: {alg_output}")
         print("-----------------------------------------")
-        chart = ChartPainter(alg_output['chart_data'])
         chart.draw_chart()
         self.test_count += 1
-
 
     def test_memory(self, data, alg_type):
         num_of_slots = int(input("Enter the number of slots: "))
@@ -58,8 +59,8 @@ class Test:
         for i in range(1, len(data) + 1):
             print(f"Test number {i}:")
             pages_list = []
-            test = data[i - 1]
-            for base_id in test:
+            test_data = data[i - 1]
+            for base_id in test_data:
                 pages_list.append(base_id)
             print(f'Pages list: {pages_list}')
             algorithm = MemoryAlg()
@@ -67,18 +68,15 @@ class Test:
             algorithm.set_slots(num_of_slots)
             if alg_type == "fifo":
                 alg_output = algorithm.fifo()
-            elif alg_type == "lru":
+            else:
                 alg_output = algorithm.lru()
             print(alg_output)
             print("-----------------------------------------")
             self.test_count += 1
 
-
     def testing_loop(self):
-        RED = '\033[31m'
-        RESET = '\033[0m'
         print("-----------------------------------------")
-        print(RED + "ALGORITHM TESTER" + RESET)
+        print(self.RED + "ALGORITHM TESTER" + self.RESET)
         while True:
             choice = input("Enter a command -> ")
             if choice == "q":
@@ -91,15 +89,13 @@ class Test:
                 self.test_memory(load_memory_data(), "fifo")
             elif choice == "lru":
                 self.test_memory(load_memory_data(), "lru")
+            elif choice == "t":
+                print(f"Number of conducted tests: {self.RED}{self.test_count}{self.RESET}")
             elif choice == "h":
                 self.help_panel()
             else:
-                print(RED + "Unknown command, press 'h' to display the help panel" + RESET)
-
-
-
+                print(self.RED + "Unknown command, press 'h' to display the help panel" + self.RESET)
 
 
 test = Test()
 test.testing_loop()
-

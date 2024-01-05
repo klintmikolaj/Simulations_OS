@@ -54,34 +54,28 @@ class MemoryAlg:
         return False
 
 
-    def replace_page(self, new_page):  # find and replace page with highest time_not_used
+    def replace_page(self, new_page):
         index_to_replace = 0
         highest_time_not_used = -1
         for i, page in enumerate(self.slots):
             if page is not None and (highest_time_not_used < page.time_not_used):
                 index_to_replace = i
                 highest_time_not_used = page.time_not_used
-        # Replace the least recently used page with the new page
         self.slots[index_to_replace] = new_page
 
 
     def fifo(self):
-        longest_not_used_index = 0  # Initialize a pointer to track the oldest page index
+        longest_not_used_index = 0
         for page in self.reference_values:
             does_page_exist = self.if_value_exists(page)
             if not does_page_exist:
-                # Replace the oldest page with the new page
                 self.slots[longest_not_used_index] = page
-
-                # Move the oldest page pointer to the next index, wrapping around if necessary
                 longest_not_used_index = (longest_not_used_index + 1) % len(self.slots)
 
                 self.page_faults += 1
             self.add_time_in_memory()
 
             print(self.slots)
-            # print(f'Page faults counter: {self.page_faults}')
-        # info = dict(page_faults=self.page_faults)
         print("Total page faults: ")
         return self.page_faults
 
@@ -91,13 +85,10 @@ class MemoryAlg:
             if not self.if_value_exists(page):
                 self.page_faults += 1
                 if None in self.slots:
-                    # Find the first empty slot and add the page there
                     empty_slot_index = self.slots.index(None)
                     self.slots[empty_slot_index] = page
                 else:
-                    # No empty slots, replace the least recently used page
                     self.replace_page(page)
-            # Update the time not used for all pages
             self.change_time_not_used(page)
             print(self.slots)
         print("Total page faults: ")
