@@ -80,7 +80,7 @@ class Test:
         while True:
             choice = input("Enter a command -> ")
             if choice == "q":
-                break
+                return 0
             elif choice == "fcfs":
                 self.test_processor(load_specific_data(), "fcfs")
             elif choice == "sjf":
