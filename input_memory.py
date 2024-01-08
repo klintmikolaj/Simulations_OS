@@ -8,3 +8,7 @@ def load_memory_data():
         test_page = random.choices(range(1, 126), weights=[90 if x < 50 else 10 for x in range(1, 126)], k=num_of_pages)
         memory_data.append(test_page)
     return memory_data
+
+def load_specific_memory_data():
+    memory_data = [1, 2, 3, 4, 1, 2, 5, 6, 2, 1, 6, 5, 7, 8, 5, 6, 7, 1, 2, 7, 8, 2, 1, 8, 7]
+    return memory_data

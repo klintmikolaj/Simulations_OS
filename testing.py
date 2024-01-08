@@ -2,13 +2,15 @@ from processor_alg import Process
 from processor_alg import ProcessorAlg
 from memoryalg import MemoryAlg
 from chart_painter import ChartPainter
-from input_memory import load_memory_data
-from input_processor import load_specific_data
+from input_memory import load_memory_data, load_specific_memory_data
+from input_processor import load_specific__processor_data
+import json
 
 
 class Test:
     def __init__(self):
         self.test_count = 0
+        # Colors variables definition
         self.RED = '\033[31m'
         self.RESET ='\033[0m'
         self.BLUE = '\033[34m'
@@ -24,6 +26,7 @@ class Test:
         print(self.BLUE + "> lru" + self.RESET + "- perform the simulation of the LRU algorithm ")
 
     def test_processor(self, data, alg_type):
+        '''Creates a processes list and passes it to the ProcessorAlg instance, then simulates FCFS/SJF algorithms '''
         print("-----------------------------------------")
         if alg_type == "fcfs":
             print("Testing FCFS algorithm")
@@ -43,12 +46,15 @@ class Test:
         elif alg_type == "sjf":
             alg_output = algorithm.sjf()
             chart = ChartPainter(alg_output['chart_data'], "SJF")
-        print(f"Logs: {alg_output}")
+        del alg_output["chart_data"]
+        # More readable output
+        print(f"Logs: {json.dumps(alg_output, indent=4)}")
         print("-----------------------------------------")
         chart.draw_chart()
         self.test_count += 1
 
     def test_memory(self, data, alg_type):
+        '''Creates a pages list and passes it to the MemoryAlg instance, then simulates FIFO/LRU algorithms'''
         num_of_slots = int(input("Enter the number of slots: "))
 
         if alg_type == "fifo":
@@ -56,46 +62,43 @@ class Test:
         elif alg_type == "lru":
             print("Testing LRU algorithm")
 
-        for i in range(1, len(data) + 1):
-            print(f"Test number {i}:")
-            pages_list = []
-            test_data = data[i - 1]
-            for base_id in test_data:
-                pages_list.append(base_id)
-            print(f'Pages list: {pages_list}')
-            algorithm = MemoryAlg()
-            algorithm.set_reference_values(pages_list)
-            algorithm.set_slots(num_of_slots)
-            if alg_type == "fifo":
-                alg_output = algorithm.fifo()
-            else:
-                alg_output = algorithm.lru()
-            print(alg_output)
-            print("-----------------------------------------")
-            self.test_count += 1
+        # for i in range(1, len(data) + 1):
+            # print(f"Test number {i}:")
+        pages_list = []
+        test_data = data
+        for base_id in test_data:
+            pages_list.append(base_id)
+        print(f'Pages list: {pages_list}')
+        algorithm = MemoryAlg()
+        algorithm.set_reference_values(pages_list)
+        algorithm.set_slots(num_of_slots)
+        if alg_type == "fifo":
+            alg_output = algorithm.fifo()
+        else:
+            alg_output = algorithm.lru()
+        print(alg_output)
+        print("-----------------------------------------")
+        self.test_count += 1
 
     def testing_loop(self):
         print("-----------------------------------------")
         print(self.RED + "ALGORITHM TESTER" + self.RESET)
+        print("Press 'h' to open the help panel")
         while True:
             choice = input("Enter a command -> ")
             if choice == "q":
                 return 0
             elif choice == "fcfs":
-                self.test_processor(load_specific_data(), "fcfs")
+                self.test_processor(load_specific__processor_data(), "fcfs")
             elif choice == "sjf":
-                self.test_processor(load_specific_data(), "sjf")
+                self.test_processor(load_specific__processor_data(), "sjf")
             elif choice == "fifo":
-                self.test_memory(load_memory_data(), "fifo")
+                self.test_memory(load_specific_memory_data(), "fifo")
             elif choice == "lru":
-                self.test_memory(load_memory_data(), "lru")
+                self.test_memory(load_specific_memory_data(), "lru")
             elif choice == "t":
                 print(f"Number of conducted tests: {self.RED}{self.test_count}{self.RESET}")
             elif choice == "h":
                 self.help_panel()
             else:
                 print(self.RED + "Unknown command, press 'h' to display the help panel" + self.RESET)
-
-
-test = Test()
-test.testing_loop()

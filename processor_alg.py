@@ -1,5 +1,3 @@
-import input_processor
-from chart_painter import ChartPainter
 class Process:
     base_id = 0
 
@@ -11,6 +9,7 @@ class Process:
         self.waiting_time = 0
 
     def __repr__(self):
+        # Colors variables definition
         RED = '\033[91m'
         RESET = '\033[0m'
         BLUE = '\033[34m'
@@ -43,6 +42,8 @@ class ProcessorAlg:
     @staticmethod
     def average(list_values, count):
         return round(sum(list_values) / count, 3)
+
+
     def delay_processes(self, val=1):
         for i in self.processes:
             i.add_waiting_time(val)
@@ -54,16 +55,28 @@ class ProcessorAlg:
 
 
     def fcfs(self):
+        '''First come first serve algorithm implementation'''
+
         self.sort_by_start_time()
         num_of_processes = len(self.processes)
         current_time = 0
+
+        # Initialize a list to keep track of the chart logs for visualization
         chart_logs = []
         for process in self.processes:
+            # If the current time is earlier than the process's start time, update the current time
             if current_time < process.start_time:
                 current_time = process.start_time
+
+            # Calculate the waiting time for the process.
             process.waiting_time = current_time - process.start_time
+
+            # Update the current time
             current_time += process.execution_time
+
             self.processes_waiting_times.append(process.waiting_time)
+
+            # Create a dictionary log for future visualisation
             process_logs = dict(
                 process_id=process.id,
                 start_time=process.start_time,
@@ -71,8 +84,11 @@ class ProcessorAlg:
                 waiting_time=process.waiting_time)
             chart_logs.append(process_logs)
             print("Finished process ->", process)
+
         self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
         print("Finished fcfs!")
+
+        # Create and return a dictionary with important data for analysis
         info_dict = dict(
             execution_time=current_time,
             average_waiting_time=self.average_process_waiting_time,
@@ -81,20 +97,38 @@ class ProcessorAlg:
         return info_dict
 
     def sjf(self):
+        '''Shortest job first algorithm implementation'''
+
         num_of_processes = len(self.processes)
         current_time = 0
+
+        # Initialize a list to keep track of the chart logs for visualization
         chart_logs = []
+
         while self.processes:
+
+            # Filter the processes that have arrived by the current time
             available_processes = [p for p in self.processes if p.start_time <= current_time]
+
+            # If no processes are available, increase the current time
             if not available_processes:
                 current_time += 1
                 continue
+
+            # Sort the available processes by their execution time in ascending order
             available_processes.sort(key=lambda x: x.execution_time)
+
+            # Select shortest process and remove it from the list
             process = available_processes[0]
             self.processes.remove(process)
+
+            # Calculate the waiting time for the process and update the current time
             process.waiting_time = current_time - process.start_time
             current_time += process.execution_time
+
             self.processes_waiting_times.append(process.waiting_time)
+
+            # Create a dictionary log for future visualisation
             process_logs = dict(
                 process_id=process.id,
                 start_time=process.start_time,
@@ -102,9 +136,11 @@ class ProcessorAlg:
                 waiting_time=process.waiting_time)
             chart_logs.append(process_logs)
             print("Finished process ->", process)
+
         self.average_process_waiting_time = self.average(self.processes_waiting_times, num_of_processes)
 
         print("Finished sjf!")
+        # Create and return a dictionary with important data for analysis
         info_dict = dict(
             execution_time=current_time,
             average_waiting_time=self.average_process_waiting_time,
