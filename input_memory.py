@@ -1,4 +1,6 @@
 import random
+
+
 def load_memory_data():
     """Creates random data list for FIFO/LRU/lFU algorithms containing lists as single int value"""
 
@@ -11,7 +13,14 @@ def load_memory_data():
         memory_data.append(test_page)
     return memory_data
 
+
 def load_specific_memory_data():
-    # memory_data = [1, 2, 3, 4, 1, 2, 5, 6, 2, 1, 6, 5, 7, 8, 5, 6, 7, 1, 2, 7, 8, 2, 1, 8, 7]
-    memory_data = [1, 4, 2, 1, 3, 4, 2, 4, 3, 1, 2, 2, 4, 3, 1, 4, 3, 2, 1, 4]
+    # TEST 1
+    # memory_data = [1, 2, 3, 4, 4, 3, 5, 6, 7, 1]
+
+    # TEST 2
+    # memory_data = [1, 4, 2, 1, 3, 4, 2, 4, 3, 1, 2, 2, 4, 3, 1, 4, 3, 2, 1, 4]
+
+    # TEST 3.1/3.2
+    memory_data = [3, 2, 1, 0, 3, 2, 4, 3, 2, 1, 0, 4]
     return memory_data

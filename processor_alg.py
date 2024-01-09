@@ -105,12 +105,12 @@ class ProcessorAlg:
         num_of_processes = len(self.processes)
         current_time = 0
 
-        # Initialize a list to keep track of the chart logs for visualization
+        # Create a list to keep track of the chart logs for visualization
         chart_logs = []
 
         while self.processes:
 
-            # Filter the processes that have arrived by the current time
+            # Filter the processes by the current time
             available_processes = [p for p in self.processes if p.start_time <= current_time]
 
             # If no processes are available, increase the current time
@@ -118,10 +118,10 @@ class ProcessorAlg:
                 current_time += 1
                 continue
 
-            # Sort the available processes by their execution time in ascending order
+            # Sort the available processes by their execution time
             available_processes.sort(key=lambda x: x.execution_time)
 
-            # Select shortest process and remove it from the list
+            # Select shortest process and delete it from the list
             process = available_processes[0]
             self.processes.remove(process)
 

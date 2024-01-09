@@ -8,6 +8,8 @@ import json
 
 
 class Test:
+    """Class used for testing all algorithms, contains a loop for performing uninterrupted tests"""
+
     def __init__(self):
         self.test_count = 0
         # Colors variables definition
@@ -28,6 +30,7 @@ class Test:
 
     def test_processor(self, data, alg_type):
         """Creates a processes list and passes it to the ProcessorAlg instance, then simulates FCFS/SJF algorithms """
+
         print("-----------------------------------------")
         if alg_type == "fcfs":
             print("Testing FCFS algorithm")
@@ -56,6 +59,7 @@ class Test:
 
     def test_memory(self, data, alg_type):
         """Creates a pages list and passes it to the MemoryAlg instance, then simulates FIFO/LRU algorithms"""
+
         num_of_slots = int(input("Enter the number of slots: "))
 
         if alg_type == "fifo":
@@ -87,6 +91,7 @@ class Test:
 
     def testing_loop(self):
         """Loop for uninterrupted tests"""
+
         print("-----------------------------------------")
         print(self.RED + "ALGORITHM TESTER" + self.RESET)
         print("Press 'h' to open the help panel")
