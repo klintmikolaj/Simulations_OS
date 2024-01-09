@@ -1,15 +1,20 @@
 import matplotlib
 from matplotlib import pyplot as plt
 import matplotlib.ticker as ticker
-matplotlib.use('TkAgg') # Opens pyplots in new windows
+
+matplotlib.use('TkAgg')  # Opens pyplots in new windows
+
 
 class ChartPainter:
+    """Class for drawing charts to visualize FCFS/SJF algorithms"""
+
     def __init__(self, chart_data, alg_type):
         self.chart_data = chart_data
         self.alg_type = alg_type
 
     def draw_chart(self):
-        '''Creates a chart showing the timelapse of FCFS/SJF algorithms'''
+        """Creates a chart showing the timelapse of FCFS/SJF algorithms"""
+
         plt.close()
         fig, ax = plt.subplots()
         ax.clear()
@@ -46,5 +51,3 @@ class ChartPainter:
         plt.grid(color='grey', linestyle='-', linewidth=0.25)
         plt.show()
         plt.close(fig)
-
-

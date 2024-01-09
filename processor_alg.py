@@ -1,4 +1,6 @@
 class Process:
+    """Class imitating a single process in FCFS/SJF algorithms"""
+
     base_id = 0
 
     def __init__(self, process_start_time, process_execution_time):
@@ -16,7 +18,7 @@ class Process:
         GREEN = '\033[32m'
         YELLOW = '\033[33m'
         info = (f"Process id: {RED} {self.id} {RESET}"
-                f"| start time: {BLUE } {self.start_time} {RESET} "
+                f"| start time: {BLUE} {self.start_time} {RESET} "
                 f"| execution time: {GREEN} {self.execution_time} {RESET}"
                 f"| waiting time: {YELLOW} {self.waiting_time} {RESET}")
         return info
@@ -28,7 +30,10 @@ class Process:
         self.waiting_time += val
         return self.waiting_time
 
+
 class ProcessorAlg:
+    """Class used for manipulating data using FCFS/SJF algorithms"""
+
     def __init__(self, processes):
         self.processes: list[Process] = processes
         self.execution_time = 0
@@ -36,26 +41,24 @@ class ProcessorAlg:
         self.processes_waiting_times: list[int] = []
 
     def add_process_setting_time(self, val=0):
-        '''Add time if the processor unit needs time to end process and start the new one '''
+        """Add time if the processor unit needs time to end process and start the new one """
+
         self.execution_time += val
 
     @staticmethod
     def average(list_values, count):
         return round(sum(list_values) / count, 3)
 
-
     def delay_processes(self, val=1):
         for i in self.processes:
             i.add_waiting_time(val)
         self.execution_time += val
 
-
     def sort_by_start_time(self):
         self.processes.sort(key=lambda process: process.start_time)
 
-
     def fcfs(self):
-        '''First come first serve algorithm implementation'''
+        """First Come First Serve algorithm implementation"""
 
         self.sort_by_start_time()
         num_of_processes = len(self.processes)
@@ -97,7 +100,7 @@ class ProcessorAlg:
         return info_dict
 
     def sjf(self):
-        '''Shortest job first algorithm implementation'''
+        """Shortest Job First algorithm implementation"""
 
         num_of_processes = len(self.processes)
         current_time = 0

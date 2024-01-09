@@ -2,7 +2,8 @@ import random
 
 
 def load_random_data():
-    '''Creates random data list for FCFS/SJF algorithms containing processes as double-value list'''
+    """Creates random data list for FCFS/SJF algorithms containing processes as double-value list"""
+
     num_of_tests = int(input("Enter the number of tests: "))
     num_of_processes = int(input("Enter the number of processes: "))
     random_data = []
@@ -20,6 +21,7 @@ def load_random_data():
 
 
 def load_specific__processor_data():
+    # Test 4
     points = {
         'p1': [0, 1], 'p11': [5, 2],
         'p2': [1, 2], 'p12': [2, 2],

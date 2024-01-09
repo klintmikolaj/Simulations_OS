@@ -1,15 +1,17 @@
 class Page:
+    """Class imitating a single page in FIFO/LRU/LFU algorithms"""
 
     def __init__(self, base_id):
         self.id = base_id
         self.time_in_memory = 0
         self.time_not_used = 0
+        self.reference_count = 0
 
     def __repr__(self):
         RED = '\033[91m'
         RESET = '\033[0m'
-        # info = f"Page id: {RED} {self.id} {RESET} | Time in memory: {self.time_in_memory} | Time not used: {self.time_not_used}"
-        # info = f"Page id: {RED} {self.id} {RESET}| Time in memory: {self.time_in_memory}"
+        # info = f"Page id: {RED} {self.id} {RESET} | Time in memory: {self.time_in_memory} | Time not used: {
+        # self.time_not_used}" info = f"Page id: {RED} {self.id} {RESET}| Time in memory: {self.time_in_memory}"
         info = f" {RED} {self.id} {RESET}"
         return info
 
@@ -18,6 +20,7 @@ class Page:
 
     def equals(self, obj_page):
         return self.id == obj_page.id and obj_page is not None
+
 
 class MemoryAlg:
     def __init__(self):
@@ -28,21 +31,24 @@ class MemoryAlg:
 
     def set_reference_values(self, reference_string):
         """Initializes memory values"""
+
         self.reference_values = [Page(base_id) for base_id in reference_string]
 
     def set_slots(self, slot_size: int):
         """Initializes slots in the memory list"""
+
         self.slots = [None for _ in range(slot_size)]
 
     def add_time_in_memory(self, val=1):
         """Increases pages time in the memory"""
+
         for slot in self.slots:
             if slot is not None:
                 slot.time_in_memory += val
 
-
     def change_time_not_used(self, switched_page, val=1):
-        '''Increases already existing pages time and sets it to 0 for recently switched ones'''
+        """Increases already existing pages time and sets it to 0 for recently switched ones"""
+
         for slot in self.slots:
             if slot is not None:
                 if slot.equals(switched_page):
@@ -51,18 +57,27 @@ class MemoryAlg:
                     slot.time_not_used += val
 
     def if_value_exists(self, page: Page):
-        '''Checks if the given page already exists in the memory list'''
+        """Checks if the given page already exists in the memory list"""
+
         for value in self.slots:
             if value is not None and value.equals(page):
                 return True
         return False
 
+    def increment_reference_count(self, page):
+        """Increases the reference count for a certain page"""
 
-    def replace_page(self, new_page):
-        '''Replaces the page in the memory with a new one'''
+        for slot in self.slots:
+            if slot is not None and slot.equals(page):
+                slot.reference_count += 1
+                break
+
+    def replace_page_LRU(self, new_page):
+        """Replaces the page in the memory with a new one based on LRU rules"""
+
         # Initialize the variables to keep track of which page to replace
         index_to_replace = 0
-        highest_time_not_used = -1 # -1 to ensure that any real time_not_used > -1
+        highest_time_not_used = -1  # -1 to ensure that any real time_not_used > -1
 
         # Iterate through each slot to find the page with the highest 'time_not_used' value
         for i, page in enumerate(self.slots):
@@ -75,9 +90,23 @@ class MemoryAlg:
         # Replace the page at the found index with the new page.
         self.slots[index_to_replace] = new_page
 
+    def replace_page_LFU(self, new_page):
+        """Replaces the page in the memory with a new one based on LFU rules"""
+        index_to_replace = 0
+        # Sets lowest_reference_count to infinity to ensure that any real page reference count will be lower
+        lowest_reference_count = float('inf')
+
+        for i, page in enumerate(self.slots):
+            # Check if the current slot is not empty and its page's reference count is lower than the current lowest
+            if page is not None and page.reference_count < lowest_reference_count:
+                index_to_replace = i
+                lowest_reference_count = page.reference_count
+
+        # Replace the page at the found index with the new page.
+        self.slots[index_to_replace] = new_page
 
     def fifo(self):
-        '''First in First out algorithm implementation'''
+        """First in First out algorithm implementation"""
 
         longest_not_used_index = 0
 
@@ -102,6 +131,8 @@ class MemoryAlg:
         return self.page_faults
 
     def lru(self):
+        """Least Recently Used algorithm implementation"""
+
         for page in self.reference_values:
             print(f"Adding page: {page}")
             # Check if the page already exists in the slots
@@ -116,10 +147,25 @@ class MemoryAlg:
                     self.slots[empty_slot_index] = page
                 else:
                     # Replace the least recently used page if there are no empty spots.
-                    self.replace_page(page)
+                    self.replace_page_LRU(page)
             self.change_time_not_used(page)
             print(self.slots)
         print("Total page faults: ")
         return self.page_faults
 
+    def lfu(self):
+        """Least Frequently Used algorithm implementation"""
 
+        for page in self.reference_values:
+            print(f"Adding page: {page}")
+            if not self.if_value_exists(page):
+                self.page_faults += 1
+                if None in self.slots:
+                    empty_slot_index = self.slots.index(None)
+                    self.slots[empty_slot_index] = page
+                else:
+                    self.replace_page_LFU(page)
+            self.increment_reference_count(page)
+            print(self.slots)
+        print("Total page faults: ")
+        return self.page_faults
