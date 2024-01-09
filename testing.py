@@ -24,6 +24,7 @@ class Test:
         print(self.BLUE + "> sjf" + self.RESET + "- perform the simulation of the SJF algorithm ")
         print(self.BLUE + "> fifo" + self.RESET + "- perform the simulation of the FIFO algorithm ")
         print(self.BLUE + "> lru" + self.RESET + "- perform the simulation of the LRU algorithm ")
+        print(self.BLUE + "> lfu" + self.RESET + "- perform the simulation of the LFU algorithm ")
 
     def test_processor(self, data, alg_type):
         """Creates a processes list and passes it to the ProcessorAlg instance, then simulates FCFS/SJF algorithms """
@@ -90,7 +91,7 @@ class Test:
         print(self.RED + "ALGORITHM TESTER" + self.RESET)
         print("Press 'h' to open the help panel")
         while True:
-            choice = input("Enter a command -> ")
+            choice = input("Enter a command -> ").strip()
             if choice == "q":
                 return 0
             elif choice == "fcfs":
