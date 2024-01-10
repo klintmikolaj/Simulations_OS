@@ -114,15 +114,20 @@ class Test:
             if choice == "q":
                 return 0
             elif choice == "fcfs":
-                self.test_processor(load_specific__processor_data(), "fcfs")
+                test = input("Enter a test value (1, 2, 3, 4, 5.1, 5.2 or 5.3) -> ").strip()
+                self.test_processor(load_specific__processor_data(test), "fcfs")
             elif choice == "sjf":
-                self.test_processor(load_specific__processor_data(), "sjf")
+                test = input("Enter a test value (1, 2, 3, 4, 5.1, 5.2 or 5.3) -> ").strip()
+                self.test_processor(load_specific__processor_data(test), "sjf")
             elif choice == "fifo":
-                self.test_memory(load_specific_memory_data(), "fifo")
+                test = input("Enter a test value (1, 2 or 3) -> ").strip()
+                self.test_memory(load_specific_memory_data(test), "fifo")
             elif choice == "lru":
-                self.test_memory(load_specific_memory_data(), "lru")
+                test = input("Enter a test value (1, 2 or 3) -> ").strip()
+                self.test_memory(load_specific_memory_data(test), "lru")
             elif choice == "lfu":
-                self.test_memory(load_specific_memory_data(), "lfu")
+                test = input("Enter a test value (1, 2 or 3) -> ").strip()
+                self.test_memory(load_specific_memory_data(test), "lfu")
             elif choice == "t":
                 print(f"Number of conducted tests: {self.RED}{self.test_count}{self.RESET}")
             elif choice == "h":

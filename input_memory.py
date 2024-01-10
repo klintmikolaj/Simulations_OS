@@ -14,14 +14,12 @@ def load_memory_data():
     return memory_data
 
 
-def load_specific_memory_data():
-    # TEST 1
-    # memory_data = [1, 2, 3, 4, 4, 3, 5, 6, 7, 1]
+def load_specific_memory_data(test):
+    """Loads specific data depending on the given test"""
 
-    # TEST 2
-    # memory_data = [1, 4, 2, 1, 3, 4, 2, 4, 3, 1, 2, 2, 4, 3, 1, 4, 3, 2, 1, 4]
-
-    # TEST 3.1/3.2 - tests vary in the number of slots
-    memory_data = [3, 2, 1, 0, 3, 2, 4, 3, 2, 1, 0, 4]
-
-    return memory_data
+    if test == "1":
+        return [1, 2, 3, 4, 4, 3, 5, 6, 7, 1]
+    elif test == "2":
+        return [1, 4, 2, 1, 3, 4, 2, 4, 3, 1, 2, 2, 4, 3, 1, 4, 3, 2, 1, 4]
+    elif test == "3":
+        return [3, 2, 1, 0, 3, 2, 4, 3, 2, 1, 0, 4]
