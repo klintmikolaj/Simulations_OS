@@ -69,7 +69,14 @@ class Test:
     def test_memory(self, data, alg_type):
         """Creates a pages list and passes it to the MemoryAlg instance, then simulates FIFO/LRU algorithms"""
 
-        num_of_slots = int(input("Enter the number of slots: "))
+        num_of_slots = 0
+        while num_of_slots not in range(1, 1000):
+            try:
+                num_of_slots = int(input("Enter the number of slots (Range 1-1000): "))
+            # Ensures that the given value is an integer
+            except ValueError:
+                print(self.RED + "Please enter an integer value" + self.RESET)
+                continue
 
         if alg_type == "fifo":
             print("Testing FIFO algorithm")
