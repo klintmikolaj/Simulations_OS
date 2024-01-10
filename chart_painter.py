@@ -37,7 +37,7 @@ class ChartPainter:
             ax.plot([start_time + waiting_time, start_time + waiting_time + execution_time], [process_id, process_id],
                     'b-')
 
-        # Set axis labels and a chart title
+        # Set axis labels and the chart title
         ax.set_title(f'{self.alg_type} algorithm chart')
         ax.set_xlabel('Time')
         ax.set_ylabel('Process ID')
@@ -53,7 +53,7 @@ class ChartPainter:
         # Show major marks at int values.
         ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
 
-        # Add a legend to a chart
+        # Add a legend to the chart
         ax.legend(['Execution time', 'Waiting time'])
 
         # Draw an auxiliary line and show the chart
