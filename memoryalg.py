@@ -85,7 +85,7 @@ class MemoryAlg:
         """Replaces the page in the memory with a new one based on LRU rules"""
 
         # Initialize the variables to keep track of which page to replace
-        index_to_change = 0
+        index_to_replace = 0
         highest_time_not_used = -1  # -1 to ensure that the value time_not_used is greater than -1
 
         # Iterate through each slot to find the page with the highest 'time_not_used' value
@@ -97,7 +97,7 @@ class MemoryAlg:
                 highest_time_not_used = page.time_not_used
 
         # Replace the page at the found index with the new page.
-        self.slots[index_to_change] = new_page
+        self.slots[index_to_replace] = new_page
 
     def change_page_LFU(self, new_page):
         """Replaces the page in the memory with a new one based on LFU rules"""
