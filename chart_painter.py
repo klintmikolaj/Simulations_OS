@@ -15,11 +15,10 @@ class ChartPainter:
     def draw_chart(self):
         """Creates a chart showing the timelapse of FCFS/SJF algorithms"""
 
-        plt.close()
+        # Define the chart figure as fig and axes as ax
         fig, ax = plt.subplots()
-        ax.clear()
 
-        # Set min and max process ID from given data
+        # Set minimum and maximum process ID from given data
         min_id = min(data['process_id'] for data in self.chart_data)
         max_id = max(data['process_id'] for data in self.chart_data)
 
@@ -30,11 +29,11 @@ class ChartPainter:
             waiting_time = data['waiting_time']
             process_id = data['process_id']
 
-            # Draw a dashed red line simulating processes waiting time
+            # Draw a dashed red line simulating processes waiting time if it exists
             if waiting_time > 0:
                 ax.plot([start_time, start_time + waiting_time], [process_id, process_id], 'r--')
 
-            # Draw the execution time as a solid blue line.
+            # Draw the processes execution times as a solid line
             ax.plot([start_time + waiting_time, start_time + waiting_time + execution_time], [process_id, process_id],
                     'b-')
 
@@ -43,20 +42,21 @@ class ChartPainter:
         ax.set_xlabel('Time')
         ax.set_ylabel('Process ID')
 
-        # Set the y-axis limits based on the process IDs value.
+        # Set the axis y limits based on the process IDs value, start with ID lower by one and end with higher by one
+        # for better transparency
         ax.set_ylim(min_id - 1, max_id + 1)
 
-        # Set the x-axis limits based on the start, waiting, and execution times values.
+        # Set the axis x limits based on the maximum value of start, waiting, and execution times
         ax.set_xlim(0, max([data['start_time'] + data['waiting_time'] + data['execution_time'] for data in
                             self.chart_data]))
 
         # Show major marks at int values.
         ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
 
-        # Add legend to a chart
+        # Add a legend to a chart
         ax.legend(['Execution time', 'Waiting time'])
 
-        # Draw an auxiliary line
+        # Draw an auxiliary line and show the chart
         plt.grid(color='grey', linestyle='-', linewidth=0.25)
         plt.show()
-        plt.close(fig)
+

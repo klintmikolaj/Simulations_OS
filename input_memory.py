@@ -21,6 +21,7 @@ def load_specific_memory_data():
     # TEST 2
     # memory_data = [1, 4, 2, 1, 3, 4, 2, 4, 3, 1, 2, 2, 4, 3, 1, 4, 3, 2, 1, 4]
 
-    # TEST 3.1/3.2
+    # TEST 3.1/3.2 - tests vary in the number of slots
     memory_data = [3, 2, 1, 0, 3, 2, 4, 3, 2, 1, 0, 4]
+
     return memory_data

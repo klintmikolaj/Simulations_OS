@@ -12,6 +12,7 @@ class Test:
 
     def __init__(self):
         self.test_count = 0
+
         # Colors variables definition
         self.RED = '\033[31m'
         self.RESET ='\033[0m'
@@ -19,6 +20,8 @@ class Test:
         self.MAGENTA = '\033[35m'
 
     def help_panel(self):
+        """Displays a help panel with all useful commands"""
+
         print(f"{self.BLUE} WELCOME TO THE HELP PANEL {self.RESET}")
         print(self.BLUE + "> q" + self.RESET + " - quits the program")
         print(self.BLUE + "> t" + self.RESET + " - displays a number of conducted tests")
@@ -29,7 +32,7 @@ class Test:
         print(self.BLUE + "> lfu" + self.RESET + "- perform the simulation of the LFU algorithm ")
 
     def test_processor(self, data, alg_type):
-        """Creates a processes list and passes it to the ProcessorAlg instance, then simulates FCFS/SJF algorithms """
+        """Creates a processes list and passes it to the ProcessorAlg instance, then simulates FCFS/SJF algorithms"""
 
         print("-----------------------------------------")
         if alg_type == "fcfs":
@@ -38,12 +41,15 @@ class Test:
             print("Testing SJF algorithm")
         print(f"Test data: {data}")
 
+        # Creates the processes list to store all processes used in the test
         processes_list = []
         for process in data:
             process_start = process[0]
             process_exec = process[1]
             processes_list.append(Process(process_start, process_exec))
         algorithm = ProcessorAlg(processes_list)
+
+        # Performs the processor algorithms
         if alg_type == "fcfs":
             alg_output = algorithm.fcfs()
             chart = ChartPainter(alg_output['chart_data'], "FCFS")
@@ -51,9 +57,12 @@ class Test:
             alg_output = algorithm.sjf()
             chart = ChartPainter(alg_output['chart_data'], "SJF")
         del alg_output["chart_data"]
+
         # More readable output
         print(f"Logs: {json.dumps(alg_output, indent=4)}")
         print("-----------------------------------------")
+
+        # Displays a chart in a separate window
         chart.draw_chart()
         self.test_count += 1
 
@@ -69,13 +78,17 @@ class Test:
         elif alg_type == "lfu":
             print("Testing LFU algorithm")
 
-        # for i in range(1, len(data) + 1):
+        # for i in range(1, len(data) + 1): # Used for an alternate way of testing
             # print(f"Test number {i}:")
+
+        # Creates the processes list to store all processes used in the test
         pages_list = []
         test_data = data
         for base_id in test_data:
             pages_list.append(base_id)
         print(f'Pages list: {pages_list}')
+
+        # Performs an algorithms with a given number of slots in the memory list
         algorithm = MemoryAlg()
         algorithm.set_reference_values(pages_list)
         algorithm.set_slots(num_of_slots)
@@ -96,6 +109,7 @@ class Test:
         print(self.RED + "ALGORITHM TESTER" + self.RESET)
         print("Press 'h' to open the help panel")
         while True:
+            # Enables typing the commands with whitespaces
             choice = input("Enter a command -> ").strip()
             if choice == "q":
                 return 0

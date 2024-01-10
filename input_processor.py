@@ -8,9 +8,11 @@ def load_random_data():
     num_of_processes = int(input("Enter the number of processes: "))
     random_data = []
 
+    # Create certain number of lists containing processes as double-value lists
     for _ in range(num_of_tests):
         processes_data = []
         for _ in range(num_of_processes):
+            # Add weights to ensure that more processes start earlier and have shorter execution times
             process_start_time = random.choices(range(1, 126), weights=[90 if x < 50 else 10 for x in range(1, 126)], k=1)[0]
             process_execution_time = random.choices(range(1, 126), weights=[90 if x < 50 else 10 for x in range(1, 126)], k=1)[0]
             process = [process_start_time, process_execution_time]
