@@ -123,6 +123,7 @@ class Test:
         print("Press 'h' to open the help panel")
 
         while True:
+            # Strip input to ensure that whitespaces don't affect the command
             choice = input("Enter a command -> ").strip()
             if choice == "q":
                 return 0
